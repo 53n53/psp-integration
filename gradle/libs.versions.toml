@@ -1,0 +1,14 @@
+[versions]
+quarkus = "3.22.3"
+
+[libraries]
+# Quarkus
+quarkus-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+quarkus-rest = { module = "io.quarkus:quarkus-rest" }
+quarkus-arc = { module = "io.quarkus:quarkus-arc" }
+quarkus-junit5 = { module = "io.quarkus:quarkus-junit5"}
+
+rest-assured = { module = "io.rest-assured:rest-assured" }
+
+[plugins]
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }
