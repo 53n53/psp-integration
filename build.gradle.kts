@@ -12,6 +12,12 @@ dependencies {
     implementation(enforcedPlatform(libs.quarkus.bom))
     implementation(libs.quarkus.rest)
     implementation(libs.quarkus.arc)
+    implementation(libs.quarkus.rest.jackson)
+
+    implementation(libs.stripe)
+
+    implementation(libs.commons.validator)
+
     testImplementation(libs.quarkus.junit5)
     testImplementation(libs.rest.assured)
 }

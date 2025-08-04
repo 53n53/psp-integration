@@ -1,13 +1,20 @@
 [versions]
-quarkus = "3.22.3"
+quarkus = "3.24.5"
+stripe = "29.1.0"
+commons-validator = "1.10.0"
 
 [libraries]
 # Quarkus
 quarkus-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
-quarkus-rest = { module = "io.quarkus:quarkus-rest" }
 quarkus-arc = { module = "io.quarkus:quarkus-arc" }
-quarkus-junit5 = { module = "io.quarkus:quarkus-junit5"}
+quarkus-junit5 = { module = "io.quarkus:quarkus-junit5" }
+quarkus-rest = { module = "io.quarkus:quarkus-rest" }
+quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson"}
 
+commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator"}
+stripe = { module = "com.stripe:stripe-java", version.ref = "stripe" }
+
+# Test
 rest-assured = { module = "io.rest-assured:rest-assured" }
 
 [plugins]
