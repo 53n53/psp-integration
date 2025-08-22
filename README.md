@@ -13,3 +13,10 @@ Currently, it includes a basic integration with Stripe. Additional PSPs may be a
 - [ ] Use WireMock to mock Stripe API calls during testing
 - [ ] Add a database to handle Stripe related data (priceId or productId for example)
 - [ ] Build a front-end
+
+## Before running the app locally
+Add a .env file to the root of the project with the following line inside:
+```
+STRIPE_API_SECRET=<Your Stripe account API secret>
+```
+Do not forget to replace the value of `<Your Stripe account API secret>`.
