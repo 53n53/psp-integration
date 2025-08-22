@@ -1,7 +1,10 @@
 [versions]
+commons-validator = "1.10.0"
+jakarta-validation = "3.1.1"
+openapi-generator = "7.14.0"
 quarkus = "3.24.5"
 stripe = "29.1.0"
-commons-validator = "1.10.0"
+swagger-annotations = "1.6.16"
 
 [libraries]
 # Quarkus
@@ -9,9 +12,12 @@ quarkus-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quark
 quarkus-arc = { module = "io.quarkus:quarkus-arc" }
 quarkus-junit5 = { module = "io.quarkus:quarkus-junit5" }
 quarkus-rest = { module = "io.quarkus:quarkus-rest" }
-quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson"}
+quarkus-rest-jackson = { module = "io.quarkus:quarkus-rest-jackson" }
+quarkus-smallrye-openapi = { module = "io.quarkus:quarkus-smallrye-openapi" }
 
-commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator"}
+commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
+jakarta-validation = { module = "jakarta.validation:jakarta.validation-api", version.ref= "jakarta-validation" }
+swagger-annotations = { module = "io.swagger:swagger-annotations", version.ref = "swagger-annotations" }
 stripe = { module = "com.stripe:stripe-java", version.ref = "stripe" }
 
 # Test
@@ -19,3 +25,4 @@ rest-assured = { module = "io.rest-assured:rest-assured" }
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }

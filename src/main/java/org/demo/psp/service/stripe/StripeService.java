@@ -1,7 +1,10 @@
 package org.demo.psp.service.stripe;
 
-import org.demo.psp.dto.CreateCheckoutRequest;
-import org.demo.psp.dto.CreateCheckoutResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.demo.psp.dto.CreateCheckoutRequestDTO;
+import org.demo.psp.dto.CreateCheckoutResponseDTO;
 import org.demo.psp.service.PaymentService;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -13,6 +16,7 @@ import com.stripe.param.checkout.SessionCreateParams;
 import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.InternalServerErrorException;
 
 @ApplicationScoped
 public class StripeService implements PaymentService {
@@ -27,13 +31,13 @@ public class StripeService implements PaymentService {
         stripeClient = new StripeClient(apiKey);
     }
 
-    public CreateCheckoutResponse createCheckout(final CreateCheckoutRequest request) {
+    public CreateCheckoutResponseDTO createCheckout(final CreateCheckoutRequestDTO request) throws InternalServerErrorException {
 
-        final StripeProductEnum stripeProductEnum = StripeProductEnum.valueOf(request.productEnumDTO().name());
+        final StripeProductEnum stripeProductEnum = StripeProductEnum.valueOf(request.getProduct().name());
 
         final SessionCreateParams sessionCreateParams = new SessionCreateParams.Builder()
-                .setSuccessUrl(request.successUrl())
-                .setCancelUrl(request.cancelUrl())
+                .setSuccessUrl(request.getSuccessUrl().toString())
+                .setCancelUrl(request.getCancelUrl().toString())
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
@@ -44,12 +48,16 @@ public class StripeService implements PaymentService {
         try {
             final Session checkoutSession = stripeClient.checkout().sessions().create(sessionCreateParams);
 
-            return CreateCheckoutResponse.builder()
-                    .url(checkoutSession.getUrl())
-                    .build();
+            return new CreateCheckoutResponseDTO()
+                    .redirectUrl(new URI(checkoutSession.getUrl()));
         } catch (final StripeException e) {
-            Log.error("Failed to create a Stripe checkout session.", e);
-            return new CreateCheckoutResponse.Builder().build();
+            final String msg = "Stripe create checkout session service returned an error";
+            Log.error(msg, e);
+            throw new InternalServerErrorException(msg);
+        } catch (final URISyntaxException e) {
+            final String msg = "Stripe create checkout session service returned an invalid URL";
+            Log.error(msg, e);
+            throw new InternalServerErrorException(e);
         }
     }
 

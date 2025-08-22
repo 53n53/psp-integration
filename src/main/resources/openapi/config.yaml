@@ -1,0 +1,10 @@
+library: quarkus
+dateLibrary: java8   # default is "legacy", which generates java.util.Date instead of LocalDateTime
+interfaceOnly: true
+returnResponse: true
+useJakartaEe: true
+
+globalProperties:
+  # generate only apis and models classes
+  apis: ""
+  models: ""

@@ -1,11 +1,12 @@
 package org.demo.psp.controller;
 
+import java.net.URI;
+
 import org.apache.commons.validator.routines.UrlValidator;
-import org.demo.psp.dto.CreateCheckoutRequest;
-import org.demo.psp.dto.CreateCheckoutResponse;
+import org.demo.psp.api.CheckoutsApi;
+import org.demo.psp.dto.CreateCheckoutRequestDTO;
+import org.demo.psp.dto.CreateCheckoutResponseDTO;
 import org.demo.psp.service.PaymentService;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import io.quarkus.logging.Log;
 import jakarta.ws.rs.BadRequestException;
@@ -13,9 +14,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/checkouts")
-public class CheckoutController {
+public class CheckoutController implements CheckoutsApi {
 
     private final PaymentService paymentService;
 
@@ -23,31 +25,29 @@ public class CheckoutController {
         this.paymentService = paymentService;
     }
 
-    private static final UrlValidator URL_VALIDATOR = new UrlValidator();
+    private static final UrlValidator URL_VALIDATOR = new UrlValidator(new String[]{"http", "https"});
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public RestResponse<CreateCheckoutResponse> createCheckout(final CreateCheckoutRequest request) {
+    public Response createCheckout(final CreateCheckoutRequestDTO request) {
         Log.infof("Received create checkout request: %s", request.toString());
 
-        if (isNotValidUrl(request.successUrl())) {
+        if (isNotValidUrl(request.getSuccessUrl())) {
             throw new BadRequestException("Invalid success url.");
         }
-        if (isNotValidUrl(request.cancelUrl())) {
+        if (isNotValidUrl(request.getCancelUrl())) {
             throw new BadRequestException("Invalid cancel url.");
         }
-        if (request.productEnumDTO() == null) {
-            throw new BadRequestException("The product field cannot be null.");
-        }
+        // Invalid Product field is managed by the exception mapper.
 
-        final CreateCheckoutResponse response = paymentService.createCheckout(request);
+        final CreateCheckoutResponseDTO response = paymentService.createCheckout(request);
         Log.debugf("Create checkout response: %s", response.toString());
 
-        return ResponseBuilder.ok(response).build();
+        return Response.ok(response).build();
     }
 
-    private static boolean isNotValidUrl(final String url) {
-        return !URL_VALIDATOR.isValid(url);
+    private static boolean isNotValidUrl(final URI uri) {
+        return !URL_VALIDATOR.isValid(uri.toString());
     }
 
 }

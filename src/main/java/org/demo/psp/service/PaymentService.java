@@ -1,10 +1,12 @@
 package org.demo.psp.service;
 
-import org.demo.psp.dto.CreateCheckoutRequest;
-import org.demo.psp.dto.CreateCheckoutResponse;
+import org.demo.psp.dto.CreateCheckoutRequestDTO;
+import org.demo.psp.dto.CreateCheckoutResponseDTO;
+
+import jakarta.ws.rs.InternalServerErrorException;
 
 public interface PaymentService {
 
-    CreateCheckoutResponse createCheckout(CreateCheckoutRequest request);
+    CreateCheckoutResponseDTO createCheckout(CreateCheckoutRequestDTO request) throws InternalServerErrorException;
 
 }

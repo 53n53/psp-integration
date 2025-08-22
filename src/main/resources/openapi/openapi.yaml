@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: psp-integration
+  version: 1.0.0
+  description: API for calling payment service provider.
+
+paths:
+  /checkouts:
+    post:
+      summary: Create a new checkout session and return the link to the checkout page hosted on the payment provider platform.
+      operationId: createCheckout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckoutRequest'
+      responses:
+        '200':
+          description: Checkout session successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCheckoutResponse'
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request. One of the required input is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Internal server error. Something went wrong in the server side.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    CreateCheckoutRequest:
+      type: object
+      properties:
+        successUrl:
+          type: string
+          format: uri
+          example: "https://example.com/success"
+        cancelUrl:
+          type: string
+          format: uri
+          example: "https://example.com/cancel"
+        product:
+          $ref: '#/components/schemas/ProductEnum'
+      required:
+        - successUrl
+        - cancelUrl
+        - product
+    CreateCheckoutResponse:
+      type: object
+      properties:
+        redirectUrl:
+          type: string
+          format: uri
+          example: "https://checkout.stripe.com/c/pay/chk_1234567890"
+    ProductEnum:
+      type: string
+      enum: [ CAFE_GRAIN_COLOMBIE_250 ]
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: int
+          example: 400
+        status:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Invalid success url."
+      required:
+        - code
+        - status
+        - message
